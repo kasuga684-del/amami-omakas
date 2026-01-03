@@ -1,0 +1,549 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>まるっとお任せ求人部｜風俗店の求人運用を代行</title>
+  
+  <style>
+    /* =========================================
+       基本設定 (Base)
+       ========================================= */
+    :root {
+      --bg: #f7f3ea;         /* アイボリー背景 */
+      --surface: #ffffff;    /* 白背景 */
+      --text: #111827;       /* 黒文字 */
+      --muted: #4b5563;      /* グレー文字 */
+      --line: rgba(200,178,138,0.35); /* 薄いブロンズ線 */
+      --bronze: #c8b28a;     /* アクセント：ブロンズ */
+      --green: #0f3d2e;      /* メイン：深緑 */
+      --green-2: #0b2e22;    /* 濃い緑 */
+      --line-green: #06C755; /* LINE公式カラー */
+      --radius: 18px;
+      --shadow: 0 14px 40px rgba(17,24,39,0.08);
+      --shadow-soft: 0 10px 26px rgba(17,24,39,0.06);
+      --font: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); color: var(--text); background: var(--bg); line-height: 1.85; overflow-x: hidden; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    .container { width: min(1120px, 92vw); margin: 0 auto; padding: 0 22px; }
+
+    /* 画像エラー時の表示 */
+    img::after {
+      content: "❌ " attr(alt) " (ファイル名: " attr(src) " が見つかりません)";
+      display: block; font-size: 12px; color: red; background: #ffecec; padding: 10px; border: 1px solid red;
+    }
+
+    /* =========================================
+       ANIMATIONS (New!)
+       ========================================= */
+    
+    /* ベースの隠しクラス */
+    .js-fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* 表示状態 */
+    .js-fade-up.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ヒーローエリア専用アニメーション */
+    .hero-animate-1 { animation: heroFadeUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.2s forwards; opacity: 0; transform: translateY(20px); }
+    .hero-animate-2 { animation: heroFadeUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.4s forwards; opacity: 0; transform: translateY(20px); }
+    .hero-animate-3 { animation: heroFadeUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards; opacity: 0; transform: translateY(20px); }
+    .hero-img-animate { animation: heroSideIn 1s cubic-bezier(0.25, 1, 0.5, 1) 0.4s forwards; opacity: 0; transform: translateX(30px); }
+
+    @keyframes heroFadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes heroSideIn {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* カードの時間差表示（Stagger） */
+    .grid-3 .card:nth-child(1) { transition-delay: 0.1s; }
+    .grid-3 .card:nth-child(2) { transition-delay: 0.2s; }
+    .grid-3 .card:nth-child(3) { transition-delay: 0.3s; }
+    .grid-3 .card:nth-child(4) { transition-delay: 0.1s; }
+    .grid-3 .card:nth-child(5) { transition-delay: 0.2s; }
+    .grid-3 .card:nth-child(6) { transition-delay: 0.3s; }
+
+    .voice-grid .voice-card:nth-child(1) { transition-delay: 0.1s; }
+    .voice-grid .voice-card:nth-child(2) { transition-delay: 0.2s; }
+    .voice-grid .voice-card:nth-child(3) { transition-delay: 0.3s; }
+    .voice-grid .voice-card:nth-child(4) { transition-delay: 0.4s; }
+
+    .flow .step:nth-child(1) { transition-delay: 0.1s; }
+    .flow .step:nth-child(2) { transition-delay: 0.3s; }
+    .flow .step:nth-child(3) { transition-delay: 0.5s; }
+
+    /* =========================================
+       Header
+       ========================================= */
+    .header { position: sticky; top: 0; z-index: 999; background: rgba(247,243,234,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    .header-inner { width: min(1240px, 96vw); margin: 0 auto; padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: 900; display: flex; align-items: center; gap: 10px; }
+    .logo-badge { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--bronze); display: grid; place-items: center; color: var(--green); background: #fff; font-weight: 900; font-size: 14px; }
+    .pc-nav ul { display: flex; gap: 22px; align-items: center; }
+    .pc-nav a { font-weight: 700; font-size: 13px; color: var(--text); padding: 6px 10px; transition: 0.2s; }
+    .header-contact { display: none; }
+
+    /* Sections Common */
+    .section { padding: 90px 0; }
+    .section.bg-surface { background: var(--surface); }
+    .section-title { font-size: 32px; font-weight: 900; text-align: center; margin-bottom: 40px; color: var(--green); letter-spacing: 0.05em; }
+    .section-lead { text-align: center; color: var(--muted); font-weight: 700; margin-bottom: 56px; font-size: 15px; }
+
+    /* Buttons & Animation */
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 16px 32px; border-radius: 999px; font-weight: 900; transition: 0.2s ease; cursor: pointer; text-align:center; line-height:1.2; }
+    
+    .btn-primary {
+      background: var(--green); color: #fff; font-size: 18px;
+      box-shadow: 0 10px 25px rgba(15, 61, 46, 0.4);
+      width: 100%; max-width: 360px;
+      animation: pulse 2s infinite;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(15, 61, 46, 0.6); background: var(--green-2); }
+
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 61, 46, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(15, 61, 46, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 61, 46, 0); }
+    }
+
+    .btn-outline {
+      border: 3px solid #fff; color: #fff; font-size: 18px;
+      width: 100%; max-width: 360px; animation: pulse-white 2s infinite;
+    }
+    .btn-outline:hover { background: #fff; color: var(--green); }
+    @keyframes pulse-white {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    }
+
+    /* HERO Section */
+    .hero { position: relative; padding: 80px 0 100px; overflow: hidden; background: var(--bg); }
+    .hero::before { content:""; position:absolute; inset:0; background-image: url("assets/hero.jpg"); background-size: cover; background-position: center top; opacity: 0.08; pointer-events:none; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+    
+    .pill { display: inline-block; background: var(--bronze); padding: 10px 30px; border-radius: 99px; margin-bottom: 28px; box-shadow: 0 8px 20px rgba(200, 178, 138, 0.5); border: 2px solid #fff; transition: transform 0.3s; }
+    .pill:hover { transform: scale(1.05); }
+    .pill span { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.05em; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+    .hero h2 { font-size: 46px; line-height: 1.3; font-weight: 1000; margin-bottom: 28px; color: var(--text); }
+    .hero .highlight { background: linear-gradient(transparent 60%, rgba(200,178,138,0.4) 60%); padding: 0 4px; }
+    .hero-desc { font-size: 18px; font-weight: 700; color: var(--muted); margin-bottom: 32px; line-height: 1.9; }
+
+    .hero-message-box { background: rgba(255, 255, 255, 0.6); border-left: 6px solid var(--bronze); padding: 24px 28px; margin-bottom: 36px; border-radius: 0 12px 12px 0; }
+    .hero-message-box p { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.6; }
+    .hero-message-box p:last-child { margin-bottom: 0; color: var(--green); font-weight: 900; font-size: 22px; }
+
+    .hero-person { width: 100%; border-radius: 24px; box-shadow: var(--shadow); object-fit: cover; aspect-ratio: 4/5; }
+    .hero-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; align-items: flex-start; }
+    .hero-sub-link { font-size: 14px; color: var(--muted); text-decoration: underline; cursor: pointer; margin-left: 10px; }
+
+    /* PROBLEM */
+    .problem-section { background: var(--surface); }
+    .problem-container { max-width: 1000px; margin: 0 auto; }
+    .problem-box { background: #fff; border: 2px solid var(--bg); border-radius: 28px; padding: 50px 60px; box-shadow: var(--shadow-soft); position: relative; }
+    .problem-list { display: flex; flex-direction: column; gap: 22px; }
+    .problem-item { display: flex; align-items: flex-start; gap: 20px; font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.5; }
+    .check-icon { color: #fff; background: var(--bronze); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; margin-top: 2px; }
+    .solution-area { margin-top: 60px; text-align: center; position: relative; }
+    .solution-area::before { content: "▼"; display: block; font-size: 32px; color: var(--bronze); margin-bottom: 24px; animation: bounce 2s infinite; }
+    @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-12px);} 60% {transform: translateY(-6px);} }
+    .solution-box { background: linear-gradient(135deg, #fdfbf7, #f7f3ea); border: 1px solid var(--bronze); border-radius: 24px; padding: 50px 40px; display: inline-block; width: 100%; }
+    .solution-lead { font-size: 34px; font-weight: 900; color: var(--green); margin-bottom: 24px; line-height: 1.35; }
+    .solution-desc { font-size: 20px; font-weight: 700; color: var(--text); line-height: 1.8; }
+
+    /* REASON */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; height: 100%; }
+    .card img { width: 100%; height: 200px; object-fit: cover; background: #eee; }
+    .card .body { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+    .card .k { font-size: 18px; font-weight: 900; color: var(--green); margin-bottom: 12px; }
+    .card .d { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* CTA Middle */
+    .cta-middle { background: linear-gradient(to right, #0f3d2e, #0b2e22); padding: 60px 0; text-align: center; color: #fff; }
+    .cta-middle h3 { font-size: 24px; font-weight: 900; margin-bottom: 24px; }
+    .cta-middle p { opacity: 0.9; margin-bottom: 20px; font-weight: 700; }
+
+    /* FLOW */
+    .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .step { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow-soft); display: flex; flex-direction: column; height: 100%; }
+    .step img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+    .step .body { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+    .step .label { display: inline-block; background: var(--bg); color: var(--green); font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; width: fit-content; }
+    .step h4 { font-size: 18px; font-weight: 900; margin-bottom: 12px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 0; }
+
+    /* VOICE */
+    .voice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .voice-card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 34px; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; }
+    .voice-card img, .voice-card .voice-img { display: none !important; }
+    .voice-header { margin-bottom: 16px; }
+    .voice-tag { display: inline-block; font-size: 12px; font-weight: 800; color: #fff; background: var(--bronze); padding: 5px 12px; border-radius: 4px; width: fit-content; margin-bottom: 10px; }
+    .voice-title { font-size: 24px; font-weight: 900; color: var(--green); line-height: 1.4; }
+    .voice-text { font-size: 17px; color: var(--text); line-height: 1.9; font-weight: 500; border-top: 2px dotted var(--line); padding-top: 20px; margin-top: 10px; }
+
+    /* PRICE */
+    .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+    .price { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; }
+    .price.main { transform: scale(1.05); border: 2px solid var(--green); z-index: 1; box-shadow: var(--shadow); }
+    .price img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+    .price .body { padding: 30px; text-align: left; display: flex; flex-direction: column; height: 100%; }
+    .price .title { font-weight: 900; color: var(--green); margin-bottom: 10px; font-size: 18px; text-align: center; }
+    .price .amount { font-size: 32px; font-weight: 900; color: var(--text); text-align: center; margin-bottom: 16px; }
+    .price .amount.free { color: var(--bronze); }
+    .price small { font-size: 14px; color: var(--muted); }
+    .price .desc { font-size: 14px; color: var(--muted); line-height: 1.8; }
+
+    /* Q&A */
+    .qa-grid { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+    .qa-item { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 32px; box-shadow: var(--shadow-soft); }
+    .qa-question { font-size: 19px; font-weight: 900; color: var(--green); margin-bottom: 16px; display: flex; gap: 14px; align-items: flex-start; line-height: 1.5; }
+    .q-icon { background: var(--green); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 900; flex-shrink: 0; margin-top: 2px; box-shadow: 0 4px 8px rgba(15, 61, 46, 0.3); }
+    .qa-answer { font-size: 16px; color: var(--text); line-height: 1.9; display: flex; gap: 14px; align-items: flex-start; border-top: 1px dashed var(--line); padding-top: 18px; }
+    .a-icon { background: var(--bronze); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 900; flex-shrink: 0; margin-top: 2px; }
+
+    /* FORM */
+    .form-section { background: var(--bg); padding: 100px 0; border-top: 1px solid var(--line); }
+    .form-container { max-width: 600px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 24px; box-shadow: 0 14px 40px rgba(0,0,0,0.08); }
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; font-weight: 900; margin-bottom: 8px; color: var(--green); font-size: 15px; }
+    .form-label .req { background: #ff4d4d; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+    .form-label .any { background: #9ca3af; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 16px; font-family: inherit; transition: 0.2s; appearance: none; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green); outline: none; background: #fdfbf7; }
+    .form-textarea { height: 120px; resize: vertical; }
+    .form-submit-btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 900; background: var(--green); color: #fff; border: none; border-radius: 999px; cursor: pointer; transition: 0.2s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .form-submit-btn:hover { background: var(--green-2); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(15,61,46,0.2); }
+    .form-submit-btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    footer { background: #111827; color: #9ca3af; text-align: center; padding: 40px 0; font-size: 12px; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid-3, .flow, .price-grid, .voice-grid { grid-template-columns: 1fr; }
+      .pc-nav, .header-contact { display: none; }
+      .price.main { transform: none; margin: 20px 0; }
+      .section-title { font-size: 26px; }
+      .hero h2 { font-size: 36px; } 
+      .hero-desc { font-size: 16px; } 
+      .hero-message-box p { font-size: 16px; } 
+      .hero-message-box p:last-child { font-size: 18px; }
+      .problem-box, .solution-box { padding: 30px 20px; }
+      .pill span { font-size: 18px; }
+      .qa-item { padding: 24px; }
+      .qa-question { font-size: 17px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo"><span class="logo-badge">求</span>まるっとお任せ求人部</div>
+      <nav class="pc-nav">
+        <ul>
+          <li><a href="#reason">できること</a></li>
+          <li><a href="#flow">流れ</a></li>
+          <li><a href="#voice">お客様の声</a></li>
+          <li><a href="#price">料金</a></li>
+          <li><a href="#contact-form">相談</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <div class="pill hero-animate-1"><span>大手グループに負けない！</span></div>
+            <h2 class="hero-animate-1">まるっとお任せ求人部で<br><span class="highlight">求人運用を最適化</span></h2>
+            <p class="hero-desc hero-animate-2">
+              毎日の求人ブログ作成・サイト更新・文言作成・<br class="pc-only">
+              お問い合わせ対応・バナー提案など、<br class="pc-only">
+              求人に関することをまとめてお任せいただけます。
+            </p>
+            <div class="hero-message-box hero-animate-2">
+              <p>優秀なスタッフを雇う　スタッフの成長に期待する</p>
+              <p>もちろん大切なことですが、<br>時間をかけず全てを任せてみませんか？</p>
+            </div>
+            <div class="hero-actions hero-animate-3">
+              <a href="#contact-form" class="btn btn-primary">まずは無料で相談する<br><span style="font-size:14px; font-weight:500;">(24時間受付中)</span></a>
+              <div class="hero-sub-link"><a href="#price">まずは料金を見る</a></div>
+            </div>
+          </div>
+          <div class="hero-card"><img class="hero-person hero-img-animate" src="assets/hero.jpg" alt="トップ画像" /></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section problem-section js-fade-up">
+      <div class="container problem-container">
+        <h3 class="section-title">こんなお悩みありませんか？</h3>
+        <div class="problem-box">
+          <ul class="problem-list">
+            <li class="problem-item"><span class="check-icon">✔</span>高い求人広告費を払っているのに効果が出ない</li>
+            <li class="problem-item"><span class="check-icon">✔</span>業務が忙しくて毎日の更新業務が追い付かない</li>
+            <li class="problem-item"><span class="check-icon">✔</span>「何か変えなきゃ！」と思いつつ放置してしまっている</li>
+            <li class="problem-item"><span class="check-icon">✔</span>店長ブログの内容が全然思いつかない</li>
+            <li class="problem-item"><span class="check-icon">✔</span>何が正解なのか分からずやってしまっている</li>
+          </ul>
+        </div>
+        <div class="solution-area js-fade-up">
+          <div class="solution-box">
+            <p class="solution-lead">こんなお悩みを解決できるのが<br>「まるっとお任せ求人部」です。</p>
+            <p class="solution-desc">大手グループ店によくある「求人部」を低単価で外注できちゃいます！<br>経験豊富で実績のある私に任せてみませんか？</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reason" class="section bg-surface">
+      <div class="container">
+        <h3 class="section-title js-fade-up">丸投げOK！お任せいただける業務</h3>
+        <div class="grid-3 js-fade-up">
+          <div class="card"><img src="assets/feature_blog.webp" alt="店長ブログ更新"><div class="body"><div class="k">毎日の店長ブログ更新</div><div class="d">応募者の心に響く内容を毎日手書きで更新します。私の一番の強みである「店長ブログ」で他店との圧倒的な差別化を実現します。</div></div></div>
+          <div class="card"><img src="assets/feature_site.webp" alt="サイト更新・修正"><div class="body"><div class="k">サイト更新・修正</div><div class="d">日々の更新で露出度アップ。放置された内容を見直して、店舗様の魅力が最大限に伝わる文章を作成します。</div></div></div>
+          <div class="card"><img src="assets/feature_copy.webp" alt="刺さる文言作成"><div class="body"><div class="k">刺さる文言作成</div><div class="d">「風俗業界での豊富な経験」×「プロのライティング力」で刺さる文言を選定し、見やすく魅力的なサイトに仕上げます。</div></div></div>
+          <div class="card"><img src="assets/feature_banner.webp" alt="バナー作成＆提案"><div class="body"><div class="k">バナー作成＆提案</div><div class="d">各地域の他店情報をリサーチし差別化。応募者がタップしたくなる洗練されたバナーを作成＆提案します。応募を増やす為に重要なことです。</div></div></div>
+          <div class="card"><img src="assets/feature_sns.webp" alt="その他SNSサポート"><div class="body"><div class="k">その他SNSサポート</div><div class="d">希望があれば営業用、求人用のSNSの運用コンサルをさせていただきます。有料媒体の掲載費用を抑えて、SNSで売上を最大化できます。</div></div></div>
+          <div class="card"><img src="assets/feature_line.webp" alt="求人専用LINEの活用"><div class="body"><div class="k">求人専用LINEの活用</div><div class="d">独自で開発した求人専用の公式LINE「RECRUIT LINK」を無料でご提供します。お問い合わせから面接予約までをスムーズにし、面接数を増加させます。</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-middle js-fade-up">
+      <div class="container">
+        <h3>まずは「1週間無料お試し」から</h3>
+        <p>現状の課題やブログの内容など、お気軽にご相談ください。</p>
+        <a href="#contact-form" class="btn btn-outline">無料で相談・応募する</a>
+      </div>
+    </section>
+
+    <section id="flow" class="section">
+      <div class="container">
+        <h3 class="section-title js-fade-up">ご利用の流れ</h3>
+        <div class="flow js-fade-up">
+          <div class="step">
+            <img src="assets/step_1.webp" alt="無料相談" />
+            <div class="body">
+              <div class="label">STEP 1</div>
+              <h4>無料相談・ヒアリング</h4>
+              <p>関西圏であれば直接お伺いし、それ以外の地域の方とは、Zoom・お電話・メッセージなどでやり取りさせていただきます。 細かくヒアリングを行いながら、方向性を一緒に明確にしていきます。 お互いの考えを丁寧にすり合わせ、内容にご納得いただけましたら、実際の稼働へと進めてまいります。</p>
+            </div>
+          </div>
+          <div class="step">
+            <img src="assets/step_2.webp" alt="お試し" />
+            <div class="body">
+              <div class="label">STEP 2</div>
+              <h4>1週間お試し</h4>
+              <p>サイト内の変更箇所、バナー、その他ご提案します。その後、店舗様の魅力が最大化させるサイトに変更し、日々の店長ブログを更新します。スグに効果が出る保証はありませんが、この無料期間でお問い合わせが増えることもございます。</p>
+            </div>
+          </div>
+          <div class="step">
+            <img src="assets/step_3.webp" alt="契約" />
+            <div class="body">
+              <div class="label">STEP 3</div>
+              <h4>ご契約・運用開始</h4>
+              <p>一週間のお試し期間終了後、ご納得いただき継続希望の場合は本契約となります。積極的にコミュニケーションを取りながら、お問い合わせが絶えない店舗づくりを一緒に目指していきましょう！</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="voice" class="section bg-surface">
+      <div class="container">
+        <h3 class="section-title js-fade-up">お客様の声</h3>
+        <div class="voice-grid js-fade-up">
+          <div class="voice-card">
+            <div class="voice-header"><span class="voice-tag">大阪府｜ピンサロ店様</span><div class="voice-title">面接数が5倍になりました！</div></div>
+            <div class="voice-text">正直なところ、【求人ブログ】の重要性をあまり理解しておらず、まったく更新していませんでした（笑）。 キャストの入店に悩んでいたのですが、奄美さんに依頼したところ、なんと数日で面接のお問い合わせが！正直、とても驚きました。 今も継続してお願いしていますが、毎月の面接数が圧倒的に増えています。 お人柄も素晴らしく、ブログ以外のことも親身に相談に乗ってくださり、本当に感謝しています。</div>
+          </div>
+          <div class="voice-card">
+            <div class="voice-header"><span class="voice-tag">兵庫県｜デリヘル店様</span><div class="voice-title">出勤人数が増えて、売上が2倍になりました！</div></div>
+            <div class="voice-text">お客様からのお問い合わせに対して、キャストの出勤人数が足りず、日々頭を抱えていました。 代理店の担当者に相談しても、提案されるのはサイトのプランアップばかりで、正直、限界を感じていたんです。 そんな中、奄美さんと出会い、面接・採用が増え、出勤人数も安定してきました。 当然ながら売上も伸び、今では新店舗の構想まで進んでいるほどです。 まさか他店と差がつくポイントが【求人ブログ】だったとは…本当に驚きました。</div>
+          </div>
+          <div class="voice-card">
+            <div class="voice-header"><span class="voice-tag">九州地方｜デリヘル店様</span><div class="voice-title">出勤人数が増えて、売上が2倍になりました！</div></div>
+            <div class="voice-text">正直、最初は半信半疑でした。某サイトのアクセスランキングなんて、ずっと圏外…。ところが【まるっとお任せ求人部】を始めてたったの1週間でいきなり5位に！さらに1カ月後には、まさかの1位を獲得してしまいました(ﾟДﾟ;)！ そこからはもう、目に見えてお問い合わせが増加。しかも他サイトまで見直してもらえて、広告費の無駄もカット。まさに“費用対効果”を肌で感じています。 お店も毎日がにぎやかで、スタッフもお客様も笑顔が絶えません。この勢いなら、本当にもう1店舗出せそうです。その時は迷わずまたお願いするつもりです！</div>
+          </div>
+          <div class="voice-card">
+            <div class="voice-header"><span class="voice-tag">四国地方｜デリヘル店様</span><div class="voice-title">３カ月面接ゼロ→3カ月面接数18件！</div></div>
+            <div class="voice-text">毎月、高額な求人広告費を払っているのに、面接ゼロが続く日々。 代理店に相談しても返ってくるのは「オプションを付けましょう！」の一言。 言われた通りにオプションを付けても、結果は何も変わりませんでした。 そんな中、現場のリアルを理解していて、心にズシンと響く【店長ブログ】と出会い、すべてがひっくり返りました（笑）【店長ブログ】以外にも、サイト内の更新等アドバイスをいただいています。　 …本当に、もっと早く出会いたかったです！</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="price" class="section">
+      <div class="container">
+        <h3 class="section-title js-fade-up">料金プラン</h3>
+        <div class="price-grid js-fade-up">
+          <div class="price">
+            <img src="assets/price_trial.webp" alt="お試し" />
+            <div class="body"><div class="title">１週間お試し期間</div><div class="amount free">無料</div><div class="desc">まずは【完全無料】で1週間、実際に稼働させていただきます。事前にすり合わせた方向性に沿って、真心を込めたブログ記事を作成・納品いたします。サイトの状況によっては、早ければ数日で反響が出るケースもございます。</div></div>
+          </div>
+          <div class="price main">
+            <img src="assets/price_main.webp" alt="メイン" />
+            <div class="body"><div class="title">まるっとお任せ求人部</div><div class="amount">55,000<small>円/月</small></div><div class="desc">日々こまめにコミュニケーションを取りながら、毎日ブログ記事を丁寧に作成いたします。地域やジャンルごとに異なる“反響の出やすい投稿時間”や、他店と差別化できるポイントを分析し、結果にこだわって取り組みます。定期的な面談や進捗報告・ご相談も行い、店舗の一員として、お問い合わせ数の増加をしっかりとサポートいたします。</div></div>
+          </div>
+          <div class="price">
+            <img src="assets/price_support.webp" alt="サポート" />
+            <div class="body"><div class="title">その他サポート</div><div class="amount free">応相談</div><div class="desc">SNS運用や集客媒体の最適化など、求人以外のお悩みにも柔軟に対応いたします。一時的な関係ではなく、長くお付き合いできるパートナーとして、誠意を持ってサポートさせていただきます。店舗様の【一員】として寄り添い、貴店のお力になれるよう全力で努めます。</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="qa" class="section bg-surface">
+      <div class="container">
+        <h3 class="section-title js-fade-up">よくある質問</h3>
+        <div class="qa-grid js-fade-up">
+          <div class="qa-item">
+            <div class="qa-question"><span class="q-icon">Q</span>お試し期間だけでも大丈夫ですか？</div>
+            <div class="qa-answer"><span class="a-icon">A</span>実際の稼働内容にご納得いただけない場合は、お試し期間のみで終了していただいて構いません。 無理なご契約をお願いすることは一切ありませんので、どうぞ安心してお試しください。</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-question"><span class="q-icon">Q</span>契約後の解約はできますか？</div>
+            <div class="qa-answer"><span class="a-icon">A</span>契約は【1カ月ごとの更新制】となっておりますので、ご希望に応じて毎月ご継続いただく形になります。 解約をご希望の際は、即日対応させていただきますので、ご安心ください。</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-question"><span class="q-icon">Q</span>地方の店舗ですが対応可能ですか？</div>
+            <div class="qa-answer"><span class="a-icon">A</span>はい、全国対応可能です！遠方の店舗様とはZoom、LINE、お電話などで密に連携を取りながら進めますので、距離によるハンデはございません。</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-question"><span class="q-icon">Q</span>すでに求人担当がいるのですが、依頼できますか？</div>
+            <div class="qa-answer"><span class="a-icon">A</span>もちろんです。担当者様の「作業負担」を減らし、面接対応や店舗運営などの「コア業務」に集中していただくためのパートナーとしてご活用ください。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact-form" class="form-section js-fade-up">
+      <div class="container form-container">
+        <h3 class="section-title" style="margin-bottom:20px;">お問い合わせ・応募</h3>
+        <p style="text-align:center; margin-bottom:40px; color:var(--muted);">以下のフォームに入力してください。<br>24時間以内に担当よりご連絡いたします。</p>
+        
+        <form id="recruitForm">
+          <div class="form-group">
+            <label class="form-label">お名前<span class="req">必須</span></label>
+            <input type="text" name="name" class="form-input" placeholder="例：山田 太郎" required />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">店舗名<span class="req">必須</span></label>
+            <input type="text" name="storeName" class="form-input" placeholder="例：Club Gemini" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">エリア<span class="req">必須</span></label>
+            <input type="text" name="area" class="form-input" placeholder="例：大阪府" required />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">電話番号<span class="req">必須</span></label>
+            <input type="tel" name="tel" class="form-input" placeholder="例：090-0000-0000" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">メールアドレス<span class="req">必須</span></label>
+            <input type="email" name="email" class="form-input" placeholder="例：info@example.com" required />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">LINE ID<span class="any">任意</span></label>
+            <input type="text" name="lineId" class="form-input" placeholder="例：recruit_taro" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ご希望の連絡方法<span class="req">必須</span></label>
+            <select name="contactMethod" class="form-select" required>
+              <option value="" disabled selected>選択してください</option>
+              <option value="LINE">LINE</option>
+              <option value="お電話">お電話</option>
+              <option value="メール">メール</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">相談内容・ご要望</label>
+            <textarea name="message" class="form-textarea" placeholder="例：求人で困っているので是非依頼したいです！"></textarea>
+          </div>
+          
+          <button type="submit" id="submitBtn" class="form-submit-btn">送信する</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 まるっとお任せ求人部. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // GAS Form Submission
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyzxAc-We0pu44XABRwT0n0Vs-d_XRDQzcYg5t_b9hub13QlWpezXulaRmlF1vM8rBg/exec";
+
+    document.getElementById('recruitForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = "送信中...";
+      
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+      
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+      })
+      .then(() => {
+        alert('送信が完了しました！\n担当者よりご連絡いたします。');
+        this.reset();
+        btn.disabled = false;
+        btn.innerText = "送信完了";
+        setTimeout(() => btn.innerText = originalText, 3000);
+      })
+      .catch(err => {
+        alert('送信に失敗しました。もう一度お試しいただくか、お電話にてご連絡ください。');
+        console.error(err);
+        btn.disabled = false;
+        btn.innerText = originalText;
+      });
+    });
+
+    // Scroll Animation (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.js-fade-up').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
